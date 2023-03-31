@@ -1,11 +1,13 @@
 package com.javarush.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @Entity
 @Table(name = "task", schema = "todo")
 public class Task {
@@ -21,4 +23,7 @@ public class Task {
     private Status status;
 
 
+    public Task() {
+
+    }
 }
