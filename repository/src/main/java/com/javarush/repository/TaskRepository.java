@@ -34,15 +34,16 @@ public class TaskRepository {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Task getById(Long id) {
+    public Task getById(int id) {
         Query<Task> query = getSession().createQuery("select t from Task t where t.id = :ID", Task.class);
         query.setParameter("ID", id);
         return query.uniqueResult();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void saveOrUpdate(Task task) {
-        getSession().persist(task);
+    public Task saveOrUpdate(Task task) {
+        Task savedTask = (Task) getSession().save(task);
+        return savedTask;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

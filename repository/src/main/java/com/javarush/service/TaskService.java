@@ -16,6 +16,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private static final String BAD_REQUEST_MESSAGE = "Given ID is invalid: ";
     private static final String NOT_FOUND_REQUEST_MESSAGE = "ID is not found: ";
+    private static final String NUMBER_FORMAT_EXCEPTION = "Please enter number: ";
 
     public TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -31,32 +32,43 @@ public class TaskService {
 
     @Transactional
     public Task edit(String sId, String description, Status status) {
-        Long id = catchException(sId);
-        if (!Objects.isNull(getTaskRepository().getById(id))) {
-            getTaskRepository().saveOrUpdate(new Task(Integer.parseInt(sId), description, status));
-        } else {
+        int id = catchException(sId);
+        Task task = new Task();
+        if (Objects.isNull(getTaskRepository().getById(id))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_REQUEST_MESSAGE + id);
         }
-    }
-
-    public Task create(String description, Status status) {
-
+        task.setDescription(description);
+        task.setStatus(status);
+        return getTaskRepository().saveOrUpdate(task);
     }
 
     @Transactional
-    public void delete(int id) {
-
+    public Task create(String description, Status status) {
+        Task task = new Task();
+        task.setDescription(description);
+        task.setStatus(status);
+        return getTaskRepository().saveOrUpdate(task);
     }
 
-    private Long catchException(String sID) {
+    @Transactional
+    public void delete(String sID) {
+        int i = catchException(sID);
+        Task task = getTaskRepository().getById(i);
+        if (Objects.isNull(task)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_REQUEST_MESSAGE + sID);
+        }
+        getTaskRepository().delete(task);
+    }
+
+    private int catchException(String sID) {
         try {
-            long id = Long.parseLong(sID);
+            int id = Integer.parseInt(sID);
             if (id < 0 || id == 0) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BAD_REQUEST_MESSAGE + sID);
             }
             return id;
         } catch (NumberFormatException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_REQUEST_MESSAGE + sID);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NUMBER_FORMAT_EXCEPTION + sID);
         }
     }
 
