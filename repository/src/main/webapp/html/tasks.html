@@ -2,9 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Tasks</title>
 </head>
 <body>
-
+    <table>
+        <thead>
+            <th>ID</th>
+            <th>DESCRIPTION</th>
+            <th>STATUS</th>
+        </thead>
+        <tbody>
+            <tr th:each="task,number : ${tasks}">
+                <td th:text="${task.description}"></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>
