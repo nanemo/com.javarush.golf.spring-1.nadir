@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0.28-oracle
+    volumes:
+      - ./mysql-dump:/docker-entrypoint-initdb.d
+    # переменные окружения
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=todo_nadir
+
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    # "зависит от",
+    links:
+      - db
