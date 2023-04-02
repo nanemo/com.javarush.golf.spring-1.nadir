@@ -29,8 +29,8 @@ public class TaskRepository {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public int getAllCount() {
-        Query<Long> select_ = getSession().createQuery("select count(t) from Task t", Long.class);
-        return Math.toIntExact(select_.getSingleResult());
+        Query<Long> query = getSession().createQuery("select count(t) from Task t", Long.class);
+        return Math.toIntExact(query.uniqueResult());
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -41,9 +41,8 @@ public class TaskRepository {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Task saveOrUpdate(Task task) {
-        Task savedTask = (Task) getSession().save(task);
-        return savedTask;
+    public void saveOrUpdate(Task task) {
+        getSession().persist(task);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

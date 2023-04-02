@@ -1,5 +1,6 @@
 package com.javarush.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -52,7 +53,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("html/tasks.html");
+        registry.addViewController("/").setViewName("tasks");
     }
 
     @Override

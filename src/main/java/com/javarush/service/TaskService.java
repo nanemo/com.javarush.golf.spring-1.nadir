@@ -27,19 +27,20 @@ public class TaskService {
     }
 
     public int getAllCount() {
-        return getTaskRepository().getAllCount();
+        return taskRepository.getAllCount();
     }
 
     @Transactional
-    public Task edit(String sId, String description, Status status) {
-        int id = catchException(sId);
+    public Task edit(int id, String description, Status status) {
+//        int id = catchException(sId);
         Task task = new Task();
         if (Objects.isNull(getTaskRepository().getById(id))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_REQUEST_MESSAGE + id);
         }
         task.setDescription(description);
         task.setStatus(status);
-        return getTaskRepository().saveOrUpdate(task);
+        taskRepository.saveOrUpdate(task);
+        return task;
     }
 
     @Transactional
@@ -47,15 +48,16 @@ public class TaskService {
         Task task = new Task();
         task.setDescription(description);
         task.setStatus(status);
-        return getTaskRepository().saveOrUpdate(task);
+        taskRepository.saveOrUpdate(task);
+        return task;
     }
 
     @Transactional
-    public void delete(String sID) {
-        int i = catchException(sID);
-        Task task = getTaskRepository().getById(i);
+    public void delete(int id) {
+//        int i = catchException(sID);
+        Task task = getTaskRepository().getById(id);
         if (Objects.isNull(task)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_REQUEST_MESSAGE + sID);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_REQUEST_MESSAGE + id);
         }
         getTaskRepository().delete(task);
     }
