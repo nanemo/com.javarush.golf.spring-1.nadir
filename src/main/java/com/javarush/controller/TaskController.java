@@ -28,9 +28,9 @@ public class TaskController {
 
     @PostMapping("/{id}")
     public String edit(Model model,
-                       @PathVariable(name = "id") String sID,
+                       @PathVariable Integer id,
                        @RequestBody TaskInfo taskInfo) {
-        taskService.edit(sID, taskInfo.getDescription(), taskInfo.getStatus());
+        taskService.edit(id, taskInfo.getDescription(), taskInfo.getStatus());
 
         return tasks(model, 1, 10);
     }
@@ -45,8 +45,8 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     public String delete(Model model,
-                       @PathVariable(name = "id") String sID) {
-        taskService.delete(sID);
+                       @PathVariable Integer id) {
+        taskService.delete(id);
 
         return tasks(model, 1 , 10);
     }
