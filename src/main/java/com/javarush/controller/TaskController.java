@@ -17,33 +17,38 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/")
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String tasks(Model model,
                         @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                         @RequestParam(value = "limit", required = false, defaultValue = "10") int limit) {
         List<Task> tasks = taskService.getAll((page - 1) * limit, limit);
         model.addAttribute("tasks", tasks);
-        return "tasks";
+        return "html/tasks.html";
     }
 
     @PostMapping("/{id}")
-    public void edit(Model model,
-                     @PathVariable(name = "id") String sID,
-                     @RequestBody TaskInfo taskInfo) {
-        Task editedTask = taskService.edit(sID, taskInfo.getDescription(), taskInfo.getStatus());
-        model.addAttribute("tasks", editedTask);
+    public String edit(Model model,
+                       @PathVariable(name = "id") String sID,
+                       @RequestBody TaskInfo taskInfo) {
+        taskService.edit(sID, taskInfo.getDescription(), taskInfo.getStatus());
+
+        return tasks(model, 1, 10);
     }
 
     @PostMapping("/")
-    public void add(Model model,
+    public String add(Model model,
                     @RequestBody TaskInfo taskInfo) {
-        Task newTask = taskService.create(taskInfo.getDescription(), taskInfo.getStatus());
-        model.addAttribute("tasks", newTask);
+        taskService.create(taskInfo.getDescription(), taskInfo.getStatus());
+
+        return tasks(model, 1, 10);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable(name = "id") String sID) {
+    public String delete(Model model,
+                       @PathVariable(name = "id") String sID) {
         taskService.delete(sID);
+
+        return tasks(model, 1 , 10);
     }
 
     public TaskService getTaskService() {
