@@ -4,6 +4,7 @@ import com.javarush.entity.Task;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ public class TaskRepository {
 
     private final SessionFactory sessionFactory;
 
+    @Autowired
     public TaskRepository(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }

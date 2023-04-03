@@ -2,7 +2,9 @@ package com.javarush.service;
 
 import com.javarush.entity.Status;
 import com.javarush.entity.Task;
+import com.javarush.exception.GlobalExceptionHandler;
 import com.javarush.repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +16,9 @@ import java.util.Objects;
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
-    private static final String BAD_REQUEST_MESSAGE = "Given ID is invalid: ";
-    private static final String NOT_FOUND_REQUEST_MESSAGE = "ID is not found: ";
-    private static final String NUMBER_FORMAT_EXCEPTION = "Please enter number: ";
 
-    public TaskService(TaskRepository taskRepository) {
+    @Autowired
+    private TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
@@ -31,11 +31,11 @@ public class TaskService {
     }
 
     @Transactional
-    public Task edit(int id, String description, Status status) {
-//        int id = catchException(sId);
+    public Task edit(String sID, String description, Status status) {
+        int id = GlobalExceptionHandler.catchException(sID);
         Task task = new Task();
         if (Objects.isNull(getTaskRepository().getById(id))) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_REQUEST_MESSAGE + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, GlobalExceptionHandler.NOT_FOUND_REQUEST_MESSAGE + id);
         }
         task.setDescription(description);
         task.setStatus(status);
@@ -53,25 +53,13 @@ public class TaskService {
     }
 
     @Transactional
-    public void delete(int id) {
-//        int i = catchException(sID);
+    public void delete(String sID) {
+        int id = GlobalExceptionHandler.catchException(sID);
         Task task = getTaskRepository().getById(id);
         if (Objects.isNull(task)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_REQUEST_MESSAGE + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, GlobalExceptionHandler.NOT_FOUND_REQUEST_MESSAGE + id);
         }
         getTaskRepository().delete(task);
-    }
-
-    private int catchException(String sID) {
-        try {
-            int id = Integer.parseInt(sID);
-            if (id < 0 || id == 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BAD_REQUEST_MESSAGE + sID);
-            }
-            return id;
-        } catch (NumberFormatException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NUMBER_FORMAT_EXCEPTION + sID);
-        }
     }
 
     public TaskRepository getTaskRepository() {
